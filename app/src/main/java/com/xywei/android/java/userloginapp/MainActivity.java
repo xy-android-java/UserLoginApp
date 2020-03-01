@@ -2,6 +2,7 @@ package com.xywei.android.java.userloginapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Button v_login;
     private Button v_cancel;
     private CheckBox v_checkBox;
+    private Button dbUserLogin;
 
     private SharedPreferences sharedPreferences = null;
     private SharedPreferences.Editor userEditor = null;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         v_username = findViewById(R.id.username);
         v_passworld = findViewById(R.id.password);
         v_checkBox = findViewById(R.id.checkBox);
+        dbUserLogin = findViewById(R.id.dbUserLogin);
 
 
         //检测是否保存了用户名和密码
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                             isRememberMe = 1;
                             userEditor.putString("username", username);
                             userEditor.putString("password", password);
-                        }else {
+                        } else {
                             userEditor.clear();
                         }
                         userEditor.putInt("isRememberMe", isRememberMe);
@@ -102,6 +105,16 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //切换到使用数据库保存用户信息的activity
+        dbUserLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DBLoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
 }

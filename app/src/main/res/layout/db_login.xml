@@ -6,4 +6,77 @@
     android:layout_height="match_parent"
     tools:context=".DBLoginActivity">
 
+    <TextView
+        android:id="@+id/db_uerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="使用数据库配置用户信息"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/db_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入用户名"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/db_uerTitle" />
+
+    <EditText
+        android:id="@+id/db_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/db_username" />
+
+    <!-- 嵌套个线性布局-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/db_password">
+
+        <Button
+            android:id="@+id/db_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#0a0"
+            android:text="登录" />
+
+        <CheckBox
+            android:id="@+id/db_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="记住我" />
+
+        <Button
+            android:id="@+id/db_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#a00"
+            android:text="退出" />
+
+        <Button
+            android:id="@+id/db_createDB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="创建数据库" />
+
+        <Button
+            android:id="@+id/db_createTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="创建表" />
+
+        <Button
+            android:id="@+id/db_insertData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="插入数据" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
