@@ -39,18 +39,18 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/db_password">
 
+        <CheckBox
+            android:id="@+id/db_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="记住我" />
+
         <Button
             android:id="@+id/db_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#0a0"
             android:text="登录" />
-
-        <CheckBox
-            android:id="@+id/db_checkBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="记住我" />
 
         <Button
             android:id="@+id/db_cancel"

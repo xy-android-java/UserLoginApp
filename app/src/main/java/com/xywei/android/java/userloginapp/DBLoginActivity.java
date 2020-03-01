@@ -1,7 +1,9 @@
 package com.xywei.android.java.userloginapp;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -33,7 +35,15 @@ public class DBLoginActivity extends AppCompatActivity {
     private CustomSQLiteOpenHelper customSQLiteOpenHelper;
     private SQLiteDatabase database;
     private static final String SQL_INSERT_USER = "insert into userinfo(username, password,imei,isrememberme) values(?,?,?,?)";
+    private static final String SQL_QUERY_USER = "select * from userinfo";
 
+    private String username = null;
+    private String password = null;
+    private String input_username = null;
+    private String input_password = null;
+    private int isRemenberme = 0;
+    private boolean isFirstLogin = true;
+    private boolean loginOK = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +62,67 @@ public class DBLoginActivity extends AppCompatActivity {
 
         //数据库如果存在就直接打开，没有就创建
         customSQLiteOpenHelper = new CustomSQLiteOpenHelper(DBLoginActivity.this, DB_NAME, null, 5);
+        //设置打开activity的时候就初始化数据库、表
+        database = customSQLiteOpenHelper.getReadableDatabase();
+        //有数据就查数据，没有也都是空
+        Cursor cursor = database.rawQuery(SQL_QUERY_USER, null);
+        //有数据就说明不是首次登陆
+        System.out.println("---cursor当前位置" + cursor.getPosition());
+        if (cursor.moveToFirst()) {
+            isFirstLogin = false;
+            username = cursor.getString(cursor.getColumnIndex("username"));
+            password = cursor.getString(cursor.getColumnIndex("password"));
+            isRemenberme = cursor.getInt(cursor.getColumnIndex("isRememberMe"));
+            cursor.close();
 
-
+        }
         //通过数据库检查用户，IMEI号，列表
+        //这段的功能是用户名密码是自动填充还是用自己输入
+        //上次记录的是记住用户信息，自动填充数据
+        if (isRemenberme == 1) {
+            dbUsername.setText(username);
+            dbPassword.setText(password);
+        }
+
+        dbLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                input_username = dbUsername.getText().toString();
+                input_password = dbPassword.getText().toString();
+                if (TextUtils.isEmpty(input_username) || TextUtils.isEmpty(input_password)) {
+                    Toast.makeText(DBLoginActivity.this, "用户名或者密码输入为空，请重新输入", Toast.LENGTH_LONG).show();
+                } else {
+                    if (isFirstLogin) {
+                        //是首次登陆，直接硬编码比较吧
+                        if (input_username.equals("admin") && input_password.equals("123")) {
+                            //提示登录成功
+                            loginOK = true;
+                            //插入数据到数据库
+                            database.execSQL("INSERT INTO USERINFO (USERNAME,PASSWORD,IMEI,ISREMEMBERME) VALUES(?,?,?,?)",
+                                    new Object[]{input_username, input_password, "999999", dbCheckBox.isChecked()});
+                        }
+
+                    } else {
+                        //不是首次登陆，直接与数据库的值比较
+                        if (input_username.equals(username) && input_password.equals(password)) {
+                            //提示登录成功
+                            loginOK = true;
+                        }
+
+                        database.execSQL("update userinfo set isrememberme=? where username=?", new Object[]{dbCheckBox.isChecked(), input_username});
+
+                    }
+                    if (loginOK) {
+                        Toast.makeText(DBLoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(DBLoginActivity.this, "用户名或者密码错误", Toast.LENGTH_LONG).show();
+
+                    }
+
+
+                }
+            }
+        });
         //选择用户、密码
 
 
@@ -78,7 +146,7 @@ public class DBLoginActivity extends AppCompatActivity {
 //                database = customSQLiteOpenHelper.getWritableDatabase();没空间了会报错
                 //保证了数据库必定会被先创建
                 database = customSQLiteOpenHelper.getReadableDatabase();
-                System.out.println("已创建数据库");
+                System.out.println("首次打开的时候已创建数据库");
             }
         });
 
